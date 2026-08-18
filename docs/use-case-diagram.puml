@@ -1,0 +1,95 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle stickman
+
+title Use Case Diagram – Movie Ticket Booking System
+
+actor Customer
+actor Admin
+actor "Payment Gateway" as PaymentGateway
+
+rectangle "Movie Ticket Booking System" {
+
+    '================ CUSTOMER =================
+
+    usecase "Register / Login" as UC_Register
+    usecase "Search Movies" as UC_Search
+    usecase "View Movie Details" as UC_Details
+    usecase "Select Show" as UC_Show
+    usecase "Check Seat Availability" as UC_CheckSeat
+    usecase "Select Seat" as UC_SelectSeat
+    usecase "Book Ticket" as UC_Book
+    usecase "View / Download Ticket" as UC_ViewTicket
+    usecase "Generate Ticket" as UC_Generate
+    usecase "Cancel Booking" as UC_Cancel
+
+    '================ PAYMENT =================
+
+    usecase "Make Payment" as UC_MakePayment
+    usecase "Process Payment" as UC_ProcessPayment
+    usecase "Process Refund" as UC_ProcessRefund
+
+    '================ ADMIN =================
+
+    usecase "Login" as UC_AdminLogin
+    usecase "Add Movie" as UC_AddMovie
+    usecase "Update Movie" as UC_UpdateMovie
+    usecase "Delete Movie" as UC_DeleteMovie
+    usecase "Manage Theatre" as UC_Theatre
+    usecase "Manage Shows" as UC_Shows
+    usecase "Manage Seats" as UC_Seats
+    usecase "View Bookings" as UC_Bookings
+
+
+    '================ CUSTOMER ASSOCIATIONS =================
+
+    Customer -- UC_Register
+    Customer -- UC_Search
+    Customer -- UC_Details
+    Customer -- UC_Show
+    Customer -- UC_CheckSeat
+    Customer -- UC_SelectSeat
+    Customer -- UC_Book
+    Customer -- UC_ViewTicket
+    Customer -- UC_Generate
+    Customer -- UC_Cancel
+
+
+    '================ ADMIN ASSOCIATIONS =================
+
+    Admin -- UC_AdminLogin
+    Admin -- UC_AddMovie
+    Admin -- UC_UpdateMovie
+    Admin -- UC_DeleteMovie
+    Admin -- UC_Theatre
+    Admin -- UC_Shows
+    Admin -- UC_Seats
+    Admin -- UC_Bookings
+
+
+    '================ PAYMENT GATEWAY =================
+
+    PaymentGateway -- UC_ProcessPayment
+    PaymentGateway -- UC_ProcessRefund
+
+
+    '================ INCLUDE RELATIONSHIPS =================
+
+    UC_CheckSeat ..> UC_MakePayment : <<include>>
+    UC_SelectSeat ..> UC_MakePayment : <<include>>
+    UC_Book ..> UC_MakePayment : <<include>>
+    UC_MakePayment ..> UC_ProcessPayment : <<include>>
+
+    ' Ticket generation / viewing
+    UC_ViewTicket ..> UC_Book : <<include>>
+
+
+    '================ EXTEND RELATIONSHIP =================
+
+    UC_ProcessRefund ..> UC_Cancel : <<extend>>
+
+}
+
+@enduml
