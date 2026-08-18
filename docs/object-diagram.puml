@@ -1,0 +1,64 @@
+@startuml
+title Movie Ticket Booking System - Object Diagram
+skinparam objectAttributeIconSize 0
+
+object "customer1 : Customer" as customer1 {
+  id = 101
+  name = "Rahul"
+  email = "rahul@example.com"
+}
+object "movie1 : Movie" as movie1 {
+  id = 1
+  title = "Example Movie"
+  genre = "Action"
+  duration = 140
+  rating = 8.5
+}
+object "theatre1 : Theatre" as theatre1 {
+  id = 10
+  name = "City Cinema"
+  address = "Main Road"
+}
+object "screen1 : Screen" as screen1 {
+  id = 2
+  name = "Screen 2"
+  capacity = 120
+}
+object "seat1 : Seat" as seat1 {
+  id = 201
+  seatNumber = "A10"
+  seatType = "Regular"
+  status = "BOOKED"
+}
+object "show1 : Show" as show1 {
+  id = 501
+  showDate = "2026-08-19"
+  showTime = "19:30"
+  ticketPrice = 250.0
+}
+object "booking1 : Booking" as booking1 {
+  id = 9001
+  status = "CONFIRMED"
+  totalAmount = 250.0
+}
+object "payment1 : Payment" as payment1 {
+  id = 7001
+  amount = 250.0
+  paymentMethod = "UPI"
+  status = "SUCCESS"
+}
+object "ticket1 : Ticket" as ticket1 {
+  id = 8001
+  ticketNumber = "TKT-9001"
+}
+
+customer1 -- booking1 : creates
+booking1 -- show1 : for
+show1 -- movie1 : screens
+show1 -- screen1 : uses
+screen1 -- seat1 : contains
+booking1 -- seat1 : reserves
+booking1 -- payment1 : paid by
+booking1 -- ticket1 : generates
+theatre1 -- screen1 : contains
+@enduml
