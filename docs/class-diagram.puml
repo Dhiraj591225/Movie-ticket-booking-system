@@ -1,97 +1,126 @@
 @startuml
+
 title Movie Ticket Booking System - Class Diagram
-skinparam classAttributeIconSize 0
 
 abstract class User {
-  -id : Long
-  -name : String
-  -email : String
-  -password : String
-  +login() : boolean
-  +logout() : void
+    id : Long
+    name : String
+    email : String
+    password : String
 }
+
 class Customer {
-  +searchMovies() : List<Movie>
-  +bookTicket() : Booking
-  +cancelBooking() : void
-  +viewBookings() : List<Booking>
+    searchMovies()
+    bookTicket()
+    cancelBooking()
+    viewBookings()
 }
+
 class Admin {
-  +manageMovies() : void
-  +manageTheatres() : void
-  +manageShows() : void
-  +manageSeats() : void
-  +manageBookings() : void
+    manageMovies()
+    manageTheatres()
+    manageShows()
+    manageSeats()
+    manageBookings()
 }
+
 class Movie {
-  -id : Long
-  -title : String
-  -genre : String
-  -duration : int
-  -rating : double
+    id : Long
+    title : String
+    genre : String
+    duration : int
+    rating : double
 }
-class Theatre { -id : Long
-  -name : String
-  -address : String
+
+class Theatre {
+    id : Long
+    name : String
+    address : String
 }
-class Screen { -id : Long
-  -name : String
-  -capacity : int
+
+class Screen {
+    id : Long
+    name : String
+    capacity : int
 }
-class Seat { -id : Long
-  -seatNumber : String
-  -seatType : String
-  -status : String
+
+class Seat {
+    id : Long
+    seatNumber : String
+    seatType : String
+    status : String
 }
-class Show { -id : Long
-  -showDate : LocalDate
-  -showTime : LocalTime
-  -ticketPrice : double
+
+class Show {
+    id : Long
+    showDate : LocalDate
+    showTime : LocalTime
+    ticketPrice : double
 }
-class Booking { -id : Long
-  -bookingDate : LocalDateTime
-  -status : String
-  -totalAmount : double
-  +calculateTotal() : double
-  +cancel() : void
+
+class Booking {
+    id : Long
+    bookingDate : LocalDateTime
+    status : String
+    totalAmount : double
+
+    calculateTotal()
+    cancel()
 }
-class Payment { -id : Long
-  -amount : double
-  -paymentMethod : String
-  -status : String
-  -transactionId : String
-  +process() : boolean
-  +refund() : boolean
+
+class Payment {
+    id : Long
+    amount : double
+    paymentMethod : String
+    status : String
+    transactionId : String
+
+    process()
+    refund()
 }
-class Ticket { -id : Long
-  -ticketNumber : String
-  -issuedAt : LocalDateTime
-  +generateTicket() : void
+
+class Ticket {
+    id : Long
+    ticketNumber : String
+    issuedAt : LocalDateTime
+
+    generateTicket()
 }
-class Coupon { -id : Long
-  -code : String
-  -discountPercent : double
-  -active : boolean
-  +isValid() : boolean
-  +calculateDiscount(amount : double) : double
+
+class Coupon {
+    id : Long
+    code : String
+    discountPercent : double
+    active : boolean
+
+    isValid()
+    calculateDiscount()
 }
+
 
 User <|-- Customer
 User <|-- Admin
-Theatre "1" *-- "1..*" Screen
-Screen "1" *-- "1..*" Seat
-Movie "1" -- "0..*" Show
-Screen "1" -- "0..*" Show
-Customer "1" -- "0..*" Booking
-Show "1" -- "0..*" Booking
-Booking "1" o-- "1..*" Seat
-Booking "1" *-- "1" Payment
-Booking "1" *-- "1" Ticket
-Booking "0..*" -- "0..1" Coupon
+
+Theatre "1" *-- "1..*" Screen : contains
+Screen "1" *-- "1..*" Seat : contains
+
+Movie "1" -- "0..*" Show : has
+Screen "1" -- "0..*" Show : hosts
+
+Customer "1" -- "0..*" Booking : makes
+Show "1" -- "0..*" Booking : for
+
+Booking "1" o-- "1..*" Seat : reserves
+Booking "1" *-- "1" Payment : has
+Booking "1" *-- "1" Ticket : generates
+
+Booking "0..*" -- "0..1" Coupon : uses
+
 Admin ..> Movie : manages
 Admin ..> Theatre : manages
 Admin ..> Screen : manages
 Admin ..> Seat : manages
 Admin ..> Show : manages
 Admin ..> Booking : manages
+
 @enduml
