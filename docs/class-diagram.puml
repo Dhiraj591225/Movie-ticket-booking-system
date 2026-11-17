@@ -1,0 +1,126 @@
+@startuml
+
+title Movie Ticket Booking System - Class Diagram
+
+abstract class User {
+    id : Long
+    name : String
+    email : String
+    password : String
+}
+
+class Customer {
+    searchMovies()
+    bookTicket()
+    cancelBooking()
+    viewBookings()
+}
+
+class Admin {
+    manageMovies()
+    manageTheatres()
+    manageShows()
+    manageSeats()
+    manageBookings()
+}
+
+class Movie {
+    id : Long
+    title : String
+    genre : String
+    duration : int
+    rating : double
+}
+
+class Theatre {
+    id : Long
+    name : String
+    address : String
+}
+
+class Screen {
+    id : Long
+    name : String
+    capacity : int
+}
+
+class Seat {
+    id : Long
+    seatNumber : String
+    seatType : String
+    status : String
+}
+
+class Show {
+    id : Long
+    showDate : LocalDate
+    showTime : LocalTime
+    ticketPrice : double
+}
+
+class Booking {
+    id : Long
+    bookingDate : LocalDateTime
+    status : String
+    totalAmount : double
+
+    calculateTotal()
+    cancel()
+}
+
+class Payment {
+    id : Long
+    amount : double
+    paymentMethod : String
+    status : String
+    transactionId : String
+
+    process()
+    refund()
+}
+
+class Ticket {
+    id : Long
+    ticketNumber : String
+    issuedAt : LocalDateTime
+
+    generateTicket()
+}
+
+class Coupon {
+    id : Long
+    code : String
+    discountPercent : double
+    active : boolean
+
+    isValid()
+    calculateDiscount()
+}
+
+
+User <|-- Customer
+User <|-- Admin
+
+Theatre "1" *-- "1..*" Screen : contains
+Screen "1" *-- "1..*" Seat : contains
+
+Movie "1" -- "0..*" Show : has
+Screen "1" -- "0..*" Show : hosts
+
+Customer "1" -- "0..*" Booking : makes
+Show "1" -- "0..*" Booking : for
+
+Booking "1" o-- "1..*" Seat : reserves
+Booking "1" *-- "1" Payment : has
+Booking "1" *-- "1" Ticket : generates
+
+Booking "0..*" -- "0..1" Coupon : uses
+
+Admin ..> Movie : manages
+Admin ..> Theatre : manages
+Admin ..> Screen : manages
+Admin ..> Seat : manages
+Admin ..> Show : manages
+Admin ..> Booking : manages
+
+@enduml
