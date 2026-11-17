@@ -1,0 +1,14 @@
+package com.moviebooking.dto;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
+
+public class SeatBookingRequest {
+    @NotNull private Long showId;
+    @NotEmpty private List<@NotNull Long> seatIds;
+    public Long getShowId() { return showId; }
+    public void setShowId(Long showId) { this.showId = showId; }
+    public List<Long> getSeatIds() { return seatIds; }
+    public void setSeatIds(List<Long> seatIds) { this.seatIds = seatIds; }
+}

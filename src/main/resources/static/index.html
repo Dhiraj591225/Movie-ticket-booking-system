@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineBook | Book Movie Tickets Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <a href="#" class="logo">
+                <span class="logo-icon">🎬</span> Cine<span class="accent">Book</span>
+            </a>
+            <span class="badge-tag">Secure Checkout</span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="#home" class="active">Home</a>
+            <a href="#movies">Now Showing</a>
+            <button class="nav-bookings-btn" id="openMyBookingsBtn">
+                🎟️ My Bookings <span class="booking-count" id="bookingBadge">0</span>
+            </button>
+        </nav>
+
+        <div class="user-profile-pill" id="userProfilePill">
+            <span class="avatar-circle">👤</span>
+            <div class="user-meta">
+                <span class="user-name" id="currentUserName">Guest</span>
+                <span class="user-role" id="currentUserRole">Sign in to book tickets</span>
+            </div>
+            <a class="auth-nav-link" id="loginNavLink" href="login.html">Login</a>
+            <button class="auth-nav-link" id="logoutNavButton" type="button" hidden>Logout</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="pill-banner">⚡ Instant Ticket Confirmation & Fast Booking</div>
+                <h1>Big Screen.<br><span class="accent">Big Emotions.</span></h1>
+                <p class="hero-description">
+                    Discover the latest blockbuster movies, select your preferred cinema seats in real-time, and enjoy effortless checkout with instant digital E-Tickets.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="#movies" class="primary-btn pulse-glow">Explore Movies & Book</a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">Multiple</span>
+                        <span class="stat-label">Secure Payment Modes</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">Instant</span>
+                        <span class="stat-label">E-Ticket Delivery</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">Live</span>
+                        <span class="stat-label">Interactive Seat Grid</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOVIES CATALOG SECTION -->
+        <section class="movies-section" id="movies">
+            <div class="section-header">
+                <div>
+                    <span class="eyebrow">NOW SHOWING IN THEATRES</span>
+                    <h2>Featured Movies</h2>
+                </div>
+
+                <div class="search-filter-box">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input
+                            type="search"
+                            id="searchInput"
+                            placeholder="Search by title, genre..."
+                            aria-label="Search movies"
+                        >
+                    </div>
+
+                    <div class="genre-pills" id="genrePills">
+                        <button class="genre-pill active" data-genre="ALL">All</button>
+                        <button class="genre-pill" data-genre="Sci-Fi">Sci-Fi</button>
+                        <button class="genre-pill" data-genre="Action">Action</button>
+                        <button class="genre-pill" data-genre="Drama">Drama</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movies Grid -->
+            <div class="movie-grid" id="movieGrid">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading available movies from database...</p>
+                </div>
+            </div>
+
+            <p id="globalStatusMsg" class="status-banner" role="status" style="display: none;"></p>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">🎬 Cine<span>Book</span></div>
+            <p>Your Ultimate Cinema Experience • All Rights Reserved</p>
+            <p class="footer-credit">Fast, Secure & Seamless Online Movie Ticket Booking</p>
+        </div>
+    </footer>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 1: SHOWTIME SELECTION MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="showtimeModal">
+        <div class="modal-card">
+            <button class="modal-close-btn" id="closeShowtimeModal">&times;</button>
+            <div class="modal-header">
+                <span class="eyebrow">STEP 1 OF 3</span>
+                <h3 id="showtimeMovieTitle">Select Showtime</h3>
+                <p class="modal-subtext" id="showtimeMovieMeta">Movie Info</p>
+            </div>
+
+            <div class="modal-body">
+                <!-- Date selector pills -->
+                <div class="selection-group">
+                    <label class="group-label">Choose Date</label>
+                    <div class="date-pills-row" id="showDatePills">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Showtimes List -->
+                <div class="selection-group">
+                    <label class="group-label">Available Shows & Screens</label>
+                    <div class="shows-list" id="showsListContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 2: INTERACTIVE SEAT SELECTION MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="seatModal">
+        <div class="modal-card modal-large">
+            <button class="modal-close-btn" id="closeSeatModal">&times;</button>
+            <div class="modal-header">
+                <span class="eyebrow">STEP 2 OF 3</span>
+                <h3 id="seatModalTitle">Select Your Seats</h3>
+                <p class="modal-subtext" id="seatModalShowInfo">Theatre • Screen • Time</p>
+            </div>
+
+            <div class="modal-body seat-modal-layout">
+                <!-- Cinema Screen Indicator -->
+                <div class="screen-indicator-box">
+                    <div class="cinema-screen-curve"></div>
+                    <span class="screen-label">ALL EYES THIS WAY • CINEMA SCREEN</span>
+                </div>
+
+                <!-- Seat Legend -->
+                <div class="seat-legend">
+                    <div class="legend-item"><span class="legend-box seat-sample available"></span> Available</div>
+                    <div class="legend-item"><span class="legend-box seat-sample selected"></span> Selected</div>
+                    <div class="legend-item"><span class="legend-box seat-sample booked"></span> Booked</div>
+                    <div class="legend-item"><span class="legend-box seat-sample vip-tier"></span> VIP (₹350)</div>
+                    <div class="legend-item"><span class="legend-box seat-sample premium-tier"></span> Premium (₹280)</div>
+                </div>
+
+                <!-- Seat Layout Grid -->
+                <div class="seat-grid-container" id="seatGridContainer">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading real-time seat availability...</p>
+                    </div>
+                </div>
+
+                <!-- Seat Selection Live Summary Bar -->
+                <div class="booking-summary-bar">
+                    <div class="summary-details">
+                        <div class="summary-line">
+                            <span>Selected Seats:</span>
+                            <strong id="selectedSeatsLabel">None</strong>
+                        </div>
+                        <div class="summary-line">
+                            <span>Ticket Price:</span>
+                            <span id="ticketPriceLabel">₹0</span> × <span id="ticketCountLabel">0</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-total-box">
+                        <span class="total-label">Total Payable</span>
+                        <span class="total-amount" id="totalAmountLabel">₹0.00</span>
+                    </div>
+
+                    <button class="primary-btn proceed-pay-btn" id="proceedToPayBtn" disabled>
+                        Proceed to Payment →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 3: SECURE PAYMENT GATEWAY MODAL (INTERNAL VIRTUAL ENGINE) -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-card modal-payment">
+            <button class="modal-close-btn" id="closePaymentModal">&times;</button>
+            <div class="modal-header payment-header">
+                <div class="gateway-branding">
+                    <span class="gateway-icon">🛡️</span>
+                    <div>
+                        <h3>CinePay Secure Checkout</h3>
+                        <span class="sandbox-pill">🔒 256-Bit SSL Encrypted</span>
+                    </div>
+                </div>
+                <div class="pay-amount-badge">
+                    <span class="amount-title">Total to Pay</span>
+                    <span class="amount-value" id="payModalAmount">₹0.00</span>
+                </div>
+            </div>
+
+            <div class="modal-body payment-body">
+                <!-- Order Summary Collapsible -->
+                <div class="order-summary-box">
+                    <div class="order-row">
+                        <span class="label">Movie:</span>
+                        <strong id="paySummaryMovie">-</strong>
+                    </div>
+                    <div class="order-row">
+                        <span class="label">Show & Screen:</span>
+                        <span id="paySummaryShow">-</span>
+                    </div>
+                    <div class="order-row">
+                        <span class="label">Seats:</span>
+                        <strong class="highlight-seats" id="paySummarySeats">-</strong>
+                    </div>
+                </div>
+
+                <!-- Payment Method Tabs -->
+                <div class="payment-tabs-header">
+                    <button class="pay-tab active" data-tab="upi">
+                        <span class="tab-icon">📱</span> UPI / QR
+                    </button>
+                    <button class="pay-tab" data-tab="card">
+                        <span class="tab-icon">💳</span> Card
+                    </button>
+                    <button class="pay-tab" data-tab="netbanking">
+                        <span class="tab-icon">🏦</span> Net Banking
+                    </button>
+                    <button class="pay-tab" data-tab="wallet">
+                        <span class="tab-icon">👛</span> Wallet
+                    </button>
+                </div>
+
+                <!-- Tab Content 1: UPI -->
+                <div class="pay-tab-content active" id="tabContentUpi">
+                    <div class="upi-method-grid">
+                        <div class="qr-col">
+                            <div class="simulated-qr-box">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=cinebook@pay%26pn=CineBookTickets%26cu=INR" alt="UPI QR Code" class="qr-image" id="virtualQrImage">
+                                <span class="qr-label">Scan with any UPI App</span>
+                            </div>
+                            <span class="or-separator">OR</span>
+                        </div>
+
+                        <div class="upi-input-col">
+                            <label for="virtualUpiInput">Enter UPI ID</label>
+                            <div class="input-with-button">
+                                <input type="text" id="virtualUpiInput" value="dhiraj@okaxis" placeholder="yourname@bank">
+                                <button type="button" class="preset-btn" id="useFastUpiPreset">Auto-fill</button>
+                            </div>
+                            <p class="input-help">Supports Google Pay, PhonePe, Paytm, BHIM and all bank UPI apps.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content 2: Credit / Debit Card -->
+                <div class="pay-tab-content" id="tabContentCard">
+                    <!-- Interactive Card Preview -->
+                    <div class="virtual-card-preview">
+                        <div class="card-chip"></div>
+                        <div class="card-number-display" id="cardPreviewNumber">•••• •••• •••• 4242</div>
+                        <div class="card-footer-display">
+                            <div>
+                                <span class="card-sub">CARD HOLDER</span>
+                                <span class="card-val" id="cardPreviewHolder">DHIRAJ CHAUHAN</span>
+                            </div>
+                            <div>
+                                <span class="card-sub">EXPIRES</span>
+                                <span class="card-val" id="cardPreviewExpiry">12/28</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-form-grid">
+                        <div class="form-group full-width">
+                            <div class="label-row">
+                                <label for="cardNumInput">Card Number</label>
+                                <button type="button" class="text-link-btn" id="fillDemoCardBtn">✨ Auto-Fill Test Card</button>
+                            </div>
+                            <input type="text" id="cardNumInput" maxlength="19" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolderInput">Cardholder Name</label>
+                            <input type="text" id="cardHolderInput" placeholder="Name on card" value="">
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="cardExpiryInput">Expiry (MM/YY)</label>
+                                <input type="text" id="cardExpiryInput" maxlength="5" placeholder="12/28" value="12/28">
+                            </div>
+                            <div class="form-group">
+                                <label for="cardCvvInput">CVV</label>
+                                <input type="password" id="cardCvvInput" maxlength="3" placeholder="123" value="123">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content 3: Net Banking -->
+                <div class="pay-tab-content" id="tabContentNetbanking">
+                    <label class="group-label">Select Bank</label>
+                    <div class="bank-grid" id="bankSelectionGrid">
+                        <button type="button" class="bank-btn active" data-bank="State Bank of India">
+                            <span class="bank-logo">🏛️</span> SBI
+                        </button>
+                        <button type="button" class="bank-btn" data-bank="HDFC Bank">
+                            <span class="bank-logo">🏢</span> HDFC Bank
+                        </button>
+                        <button type="button" class="bank-btn" data-bank="ICICI Bank">
+                            <span class="bank-logo">🏦</span> ICICI Bank
+                        </button>
+                        <button type="button" class="bank-btn" data-bank="Axis Bank">
+                            <span class="bank-logo">🏛️</span> Axis Bank
+                        </button>
+                        <button type="button" class="bank-btn" data-bank="Punjab National Bank">
+                            <span class="bank-logo">🏢</span> PNB
+                        </button>
+                        <button type="button" class="bank-btn" data-bank="Kotak Mahindra Bank">
+                            <span class="bank-logo">🏦</span> Kotak Bank
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content 4: Wallet -->
+                <div class="pay-tab-content" id="tabContentWallet">
+                    <div class="wallet-box">
+                        <div class="wallet-info">
+                            <span class="wallet-icon">👛</span>
+                            <div>
+                                <h4>CinePay Fast Wallet</h4>
+                                <span class="wallet-balance">₹5,000.00 Balance</span>
+                            </div>
+                        </div>
+                        <span class="wallet-badge">Instant 1-Click Pay</span>
+                    </div>
+                    <p class="wallet-note">1-Click instant checkout with verified security.</p>
+                </div>
+
+                <!-- Hidden / Developer test simulation flag (remains accessible internally without displaying on UI) -->
+                <input type="checkbox" id="simulateFailureCheckbox" style="display: none;">
+
+                <!-- Error notice area -->
+                <div class="payment-error-banner" id="paymentErrorBanner" style="display: none;"></div>
+
+                <!-- Pay Button -->
+                <button class="primary-btn pay-now-btn" id="confirmVirtualPayBtn">
+                    Pay Now <span id="payBtnAmount">₹0.00</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OTP VERIFICATION MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="otpModal">
+        <div class="modal-card modal-small">
+            <div class="modal-header">
+                <span class="eyebrow">2-FACTOR AUTHENTICATION</span>
+                <h3>Enter One-Time Password</h3>
+                <p class="modal-subtext">A 6-digit one-time password (OTP) has been sent to your registered mobile number.</p>
+            </div>
+
+            <div class="modal-body text-center">
+                <div class="otp-inputs-row">
+                    <input type="text" maxlength="6" id="otpCodeInput" class="otp-field" placeholder="123456" value="123456">
+                </div>
+                <button type="button" class="preset-btn mt-2" id="autoFillOtpBtn">✨ Auto-Fill OTP (123456)</button>
+
+                <div class="modal-actions mt-3">
+                    <button class="secondary-btn" id="cancelOtpBtn">Cancel</button>
+                    <button class="primary-btn" id="submitOtpBtn">Verify & Complete Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PROCESSING PAYMENT FULLSCREEN OVERLAY -->
+    <!-- ======================================================== -->
+    <div class="processing-overlay" id="processingOverlay">
+        <div class="processing-card">
+            <div class="pulse-spinner"></div>
+            <h3 id="processingStepTitle">Processing Secure Payment...</h3>
+            <p id="processingStepSubtitle">Connecting with banking network and locking allocated seats...</p>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="processingBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 4: BOOKING CONFIRMATION & DIGITAL E-TICKET -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal-card modal-ticket">
+            <button class="modal-close-btn" id="closeTicketModal">&times;</button>
+
+            <div class="ticket-celebration">
+                <div class="success-checkmark">✓</div>
+                <h2>Booking Confirmed!</h2>
+                <p>Your payment has been successfully processed. Here is your digital cinema ticket.</p>
+            </div>
+
+            <!-- DIGITAL PERFORATED TICKET SLIP -->
+            <div class="cinema-ticket-slip" id="printableTicket">
+                <div class="ticket-header-strip">
+                    <span class="ticket-brand">🎬 CineBook Cinema Pass</span>
+                    <span class="ticket-status-badge">CONFIRMED</span>
+                </div>
+
+                <div class="ticket-body">
+                    <div class="ticket-left">
+                        <img src="" alt="Movie Poster" class="ticket-poster" id="ticketPosterImg">
+                    </div>
+
+                    <div class="ticket-center">
+                        <h3 class="ticket-movie-title" id="ticketMovieTitle">Movie Title</h3>
+                        <p class="ticket-genre" id="ticketMovieGenre">Genre • Duration</p>
+
+                        <div class="ticket-grid-meta">
+                            <div>
+                                <span class="ticket-meta-label">CINEMA & AUDI</span>
+                                <strong id="ticketTheatreScreen">CineBook Grand • Screen 1</strong>
+                            </div>
+                            <div>
+                                <span class="ticket-meta-label">DATE & TIME</span>
+                                <strong id="ticketDateTime">07 Nov 2026 • 07:30 PM</strong>
+                            </div>
+                            <div>
+                                <span class="ticket-meta-label">SEATS BOOKED</span>
+                                <div class="ticket-seat-badges" id="ticketSeatBadges">
+                                    <span class="seat-pill">A1</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="ticket-meta-label">TICKET NUMBER</span>
+                                <code id="ticketNumberDisplay">TKT-12345678</code>
+                            </div>
+                        </div>
+
+                        <div class="ticket-payment-footer">
+                            <div class="payment-badge-info">
+                                <span class="ticket-meta-label">PAYMENT STATUS</span>
+                                <span class="badge-success" id="ticketPayMethodBadge">PAID VIA UPI</span>
+                            </div>
+                            <div class="txn-reference">
+                                <span class="ticket-meta-label">TRANSACTION REF</span>
+                                <span id="ticketTxnRefDisplay">TXN-9835482012</span>
+                            </div>
+                            <div class="amount-paid">
+                                <span class="ticket-meta-label">TOTAL PAID</span>
+                                <strong id="ticketTotalPaidDisplay">₹560.00</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-right-stub">
+                        <div class="stub-notch-top"></div>
+                        <div class="barcode-graphic">
+                            <div class="barcode-lines"></div>
+                            <span class="barcode-number" id="ticketBarcodeText">TKT-123456</span>
+                        </div>
+                        <span class="stub-note">Scan at Cinema Entrance</span>
+                        <div class="stub-notch-bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TICKET ACTIONS -->
+            <div class="ticket-modal-actions">
+                <button class="secondary-btn" id="printTicketBtn">🖨️ Print / Save Ticket as PDF</button>
+                <button class="primary-btn" id="ticketViewAllBookingsBtn">View in My Bookings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL 5: MY BOOKINGS HISTORY MODAL -->
+    <!-- ======================================================== -->
+    <div class="modal-overlay" id="myBookingsModal">
+        <div class="modal-card modal-large">
+            <button class="modal-close-btn" id="closeMyBookingsModal">&times;</button>
+            <div class="modal-header">
+                <span class="eyebrow">CUSTOMER DASHBOARD</span>
+                <h3>My Bookings & Tickets</h3>
+                <p class="modal-subtext">View, reprint, or check payment status for all your tickets</p>
+            </div>
+
+            <div class="modal-body">
+                <div class="bookings-history-list" id="bookingsHistoryList">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading your booking history...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
